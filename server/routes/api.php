@@ -1,10 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 
-/**
- * Authentication
- */
-Route::post('login',        [AuthController::class, 'login']);
-Route::post('register',     [AuthController::class, 'register']);
+Route::get('questions', function() {
+    return Http::get('http://numbersapi.com/1..100');
+});

@@ -5,7 +5,6 @@ import store from './store/index.js'
 import '/css/reboot.css'
 import '/css/material-icons.css'
 import '/css/style.css'
-import '/css/style-dark.css'
 
 const app = createApp(App)
 

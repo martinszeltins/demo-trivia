@@ -1,10 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router"
 
 import AppLayout from "./views/layouts/app.vue"
-import LoginLayout from "./views/layouts/login.vue"
 import Home from "./views/home.vue"
-import Login from "./views/login.vue"
-import auth from './middleware/auth.js'
 
 const routes = [
     {
@@ -15,21 +12,6 @@ const routes = [
                 path: '',
                 name: "home",
                 component: Home,
-            }
-        ],
-        meta: {
-            middleware: [ auth ],
-        },
-    },
-
-    {
-        path: "/login",
-        component: LoginLayout,
-        children: [
-            {
-                path: '',
-                name: "login",
-                component: Login,
             }
         ],
     },
