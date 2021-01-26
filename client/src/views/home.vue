@@ -20,5 +20,19 @@
 </template>
 
 <script setup>
+    import { ref } from 'vue'
+    import Questions from '../api/questions.js'
 
+    const questions = ref([])
+    const currentNumber = ref(1)
+    const currentQuestion = ref(1)
+
+    async function startGame() {
+        const questions = await Questions.get()
+
+        let questionKeys = Object.keys(questions)
+        questionKeys = questionKeys.sort(() => Math.random() - 0.5)
+    }
+
+    startGame()
 </script>
