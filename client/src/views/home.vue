@@ -5,15 +5,40 @@
 
     <div class="app-container">
         <div class="game">
+            <div
+                class="game__loading"
+                :class="{ 'visible': isLoading }">
+                Loading...
+            </div>
+
             <div class="game__question">
-                What is the number of tools in the Wenger Swiss Army Knife version XXL, listed in the Guinness Book of World Records as the world's most multi-functional penknife?
+                {{ currentQuestion }}
             </div>
 
             <div class="game__answers">
-                <div class="game__answer">A: I dont know</div>
-                <div class="game__answer">B: I dont know</div>
-                <div class="game__answer">C: I dont know</div>
-                <div class="game__answer">D: I dont know</div>
+                <div
+                    @click="answerQuestion(answers[0])"
+                    class="game__answer">
+                    A: {{ answers[0] }}
+                </div>
+
+                <div
+                    @click="answerQuestion(answers[1])"
+                    class="game__answer">
+                    B: {{ answers[1] }}
+                </div>
+
+                <div
+                    @click="answerQuestion(answers[2])"
+                    class="game__answer">
+                    C: {{ answers[2] }}
+                </div>
+
+                <div
+                    @click="answerQuestion(answers[3])"
+                    class="game__answer">
+                    D: {{ answers[3] }}
+                </div>
             </div>
         </div>
     </div>
@@ -24,14 +49,69 @@
     import Questions from '../api/questions.js'
 
     const questions = ref([])
-    const currentNumber = ref(1)
-    const currentQuestion = ref(1)
+    const currentQuestion = ref('')
+    const currentQuestionNumber = ref(0)
+    const QUESTION = 1
+    const ANSWER = 0
+    const answers = ref([])
+    const isLoading = ref(false)
 
     async function startGame() {
-        const questions = await Questions.get()
+        currentQuestionNumber.value = 0
 
-        let questionKeys = Object.keys(questions)
-        questionKeys = questionKeys.sort(() => Math.random() - 0.5)
+        questions.value = await getQuestions()
+        currentQuestion.value = ask(questions.value[currentQuestionNumber.value][QUESTION])
+        makeAnswers()
+    }
+
+    async function getQuestions() {
+        isLoading.value = true
+
+        let questions = await Questions.get()
+        questions = Object.entries(questions)
+        
+        isLoading.value = false
+
+        return questions.sort(() => Math.random() - 0.5)
+    }
+
+    function ask(question) {
+        return question.replace(/^\d+/, 'What').replace(/(\.$)/, '?')
+    }
+
+    function makeAnswers() {
+        let correctAnswer = Math.floor(Math.random() * 3) + 1
+
+        for (let i = 0; i < 4; i++) {
+            answers.value[i] = Math.floor(Math.random() * (200 - 10 + 1) + 10)
+        }
+
+        answers.value[correctAnswer] = questions.value[currentQuestionNumber.value][ANSWER]
+    }
+
+    function answerQuestion(answer) {
+        if (currentQuestionNumber.value == 3) {
+            winGame()
+            return
+        }
+
+        if (questions.value[currentQuestionNumber.value][ANSWER] === answer) {
+            getNextQuestion()
+        } else {
+            alert('Wrong answer. The correct answer was ' + questions.value[currentQuestionNumber.value][ANSWER])
+            startGame()
+        }
+    }
+
+    function getNextQuestion() {
+        currentQuestionNumber.value = currentQuestionNumber.value + 1
+        currentQuestion.value = ask(questions.value[currentQuestionNumber.value][QUESTION])
+        makeAnswers()
+    }
+
+    function winGame() {
+        alert('Congratulations! You have won the game!')
+        startGame()
     }
 
     startGame()

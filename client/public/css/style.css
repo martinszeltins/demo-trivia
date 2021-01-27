@@ -43,3 +43,16 @@
 .game__answer:hover {
     background: #d8d8d8;
 }
+
+.game__loading {
+    text-align: center;
+    margin-bottom: 20px;
+    font-style: italic;
+    visibility: false;
+    opacity: 0;
+}
+
+.visible {
+    visibility: true;
+    opacity: 1;
+}
