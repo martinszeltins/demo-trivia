@@ -19,6 +19,10 @@
 
             <div class="game__question">
                 {{ currentQuestion }}
+
+                <div class="game__question-count">
+                    {{ currentQuestionNumber + 1 }}
+                </div>
             </div>
 
             <div class="game__answers">
