@@ -95,7 +95,7 @@
         let correctAnswer = Math.floor(Math.random() * 3) + 1
 
         for (let i = 0; i < 4; i++) {
-            answers.value[i] = Math.floor(Math.random() * (200 - 10 + 1) + 10)
+            answers.value[i] = Math.floor(Math.random() * (250 - 10 + 1) + 10)
         }
 
         answers.value[correctAnswer] = questions.value[currentQuestionNumber.value][ANSWER]
