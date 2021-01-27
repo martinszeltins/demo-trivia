@@ -5,6 +5,12 @@
 
     <div class="app-container">
         <div class="game">
+            <transition name="bounce">
+                <div v-if="showThumbsUp" class="game__thumbs-up">
+                    <svg-thumbs-up />
+                </div>
+            </transition>
+            
             <div
                 class="game__loading"
                 :class="{ 'visible': isLoading }">
@@ -47,14 +53,16 @@
 <script setup>
     import { ref } from 'vue'
     import Questions from '../api/questions.js'
+    import SvgThumbsUp from '../components/ThumbsUp.vue'
 
-    const questions = ref([])
-    const currentQuestion = ref('')
-    const currentQuestionNumber = ref(0)
-    const QUESTION = 1
     const ANSWER = 0
+    const QUESTION = 1
     const answers = ref([])
+    const questions = ref([])
     const isLoading = ref(false)
+    const currentQuestion = ref('')
+    const showThumbsUp = ref(false)
+    const currentQuestionNumber = ref(0)
 
     async function startGame() {
         currentQuestionNumber.value = 0
@@ -90,12 +98,9 @@
     }
 
     function answerQuestion(answer) {
-        if (currentQuestionNumber.value == 3) {
-            winGame()
-            return
-        }
-
         if (questions.value[currentQuestionNumber.value][ANSWER] === answer) {
+            if (currentQuestionNumber.value == 19) { winGame(); return }
+            showThumbsUpIcon()
             getNextQuestion()
         } else {
             alert('Wrong answer. The correct answer was ' + questions.value[currentQuestionNumber.value][ANSWER])
@@ -111,7 +116,25 @@
 
     function winGame() {
         alert('Congratulations! You have won the game!')
+        throwConfetti()
         startGame()
+    }
+
+    function throwConfetti() {
+        window.confetti.start()
+
+        setTimeout(() => {
+            window.confetti.remove()
+        }, 8000)
+    }
+
+    function showThumbsUpIcon() {
+        showThumbsUp.value = true
+
+        let timeout = setTimeout(() => {
+            showThumbsUp.value = false
+            clearTimeout(timeout)
+        }, 1000)
     }
 
     startGame()
