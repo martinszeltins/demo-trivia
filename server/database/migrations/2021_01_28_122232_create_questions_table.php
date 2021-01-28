@@ -14,7 +14,7 @@ class CreateQuestionsTable extends Migration
     public function up()
     {
         Schema::create('questions', function (Blueprint $table) {
-            $table->id();
+            $table->id()->from(199);
             $table->string('question');
             $table->string('answer');
             $table->boolean('has_been_asked')->default(0);
