@@ -23,8 +23,7 @@ class NewGameController extends Controller
             ];
         }
 
-        Question::truncate();
-        Question::insert($questions);
+        $this->insertQuestionsInDB($questions);
     }
 
     /**
@@ -37,5 +36,16 @@ class NewGameController extends Controller
         $askedQuestion = preg_replace('/^\d+/', 'What', $question);
 
         return preg_replace('/(\.$)/', '?', $askedQuestion);
+    }
+
+    /**
+     * Reset and insert the new questions in db
+     *
+     * @return  void
+     */
+    public function insertQuestionsInDB($questions)
+    {
+        Question::truncate();
+        Question::insert($questions);
     }
 }
