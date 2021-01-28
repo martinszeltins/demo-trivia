@@ -18,7 +18,7 @@
             </div>
 
             <div class="game__question">
-                {{ currentQuestion }}
+                {{ currentQuestion.question }}
 
                 <div class="game__question-count">
                     {{ currentQuestionNumber + 1 }}
@@ -27,27 +27,27 @@
 
             <div class="game__answers">
                 <div
-                    @click="answerQuestion(answers[0])"
+                    @click="answerQuestion(currentQuestion.answers[0])"
                     class="game__answer">
-                    A: {{ answers[0] }}
+                    A: {{ currentQuestion.answers[0] }}
                 </div>
 
                 <div
-                    @click="answerQuestion(answers[1])"
+                    @click="answerQuestion(currentQuestion.answers[1])"
                     class="game__answer">
-                    B: {{ answers[1] }}
+                    B: {{ currentQuestion.answers[1] }}
                 </div>
 
                 <div
-                    @click="answerQuestion(answers[2])"
+                    @click="answerQuestion(currentQuestion.answers[2])"
                     class="game__answer">
-                    C: {{ answers[2] }}
+                    C: {{ currentQuestion.answers[2] }}
                 </div>
 
                 <div
-                    @click="answerQuestion(answers[3])"
+                    @click="answerQuestion(currentQuestion.answers[3])"
                     class="game__answer">
-                    D: {{ answers[3] }}
+                    D: {{ currentQuestion.answers[3] }}
                 </div>
             </div>
         </div>
@@ -56,66 +56,58 @@
 
 <script setup>
     import { ref } from 'vue'
-    import Questions from '../api/questions.js'
+    import Game from '../api/game.js'
+    import Answer from '../api/answer.js'
+    import Question from '../api/question.js'
     import SvgThumbsUp from '../components/ThumbsUp.vue'
 
-    const ANSWER = 0
-    const QUESTION = 1
-    const answers = ref([])
-    const questions = ref([])
+    const currentQuestion = ref({
+        id: '',
+        question: '',
+        answers: [],
+    })
+
     const isLoading = ref(false)
-    const currentQuestion = ref('')
     const showThumbsUp = ref(false)
     const currentQuestionNumber = ref(0)
 
     async function startGame() {
-        currentQuestionNumber.value = 0
-
-        questions.value = await getQuestions()
-        currentQuestion.value = ask(questions.value[currentQuestionNumber.value][QUESTION])
-        makeAnswers()
-    }
-
-    async function getQuestions() {
         isLoading.value = true
 
-        let questions = await Questions.get()
-        questions = Object.entries(questions)
-        
+        currentQuestionNumber.value = 0
+
+        await Game.startNew()
+        currentQuestion.value = await Question.get()
+
+        isLoading.value = false
+    }
+
+    async function answerQuestion(answer) {
+        isLoading.value = true
+
+        const result = await Answer.answerQuestion({
+            id: currentQuestion.value.id,
+            answer: answer,
+        })
+
         isLoading.value = false
 
-        return questions.sort(() => Math.random() - 0.5)
-    }
-
-    function ask(question) {
-        return question.replace(/^\d+/, 'What').replace(/(\.$)/, '?')
-    }
-
-    function makeAnswers() {
-        let correctAnswer = Math.floor(Math.random() * 3) + 1
-
-        for (let i = 0; i < 4; i++) {
-            answers.value[i] = Math.floor(Math.random() * (250 - 10 + 1) + 10)
-        }
-
-        answers.value[correctAnswer] = questions.value[currentQuestionNumber.value][ANSWER]
-    }
-
-    function answerQuestion(answer) {
-        if (questions.value[currentQuestionNumber.value][ANSWER] === answer) {
+        if (result.is_correct) {
             if (currentQuestionNumber.value == 19) { winGame(); return }
             showThumbsUpIcon()
             getNextQuestion()
         } else {
-            alert('Wrong answer. The correct answer was ' + questions.value[currentQuestionNumber.value][ANSWER])
+            alert(`Wrong answer. The correct answer was ${result.correct_answer}`)
             startGame()
         }
     }
 
-    function getNextQuestion() {
+    async function getNextQuestion() {
         currentQuestionNumber.value = currentQuestionNumber.value + 1
-        currentQuestion.value = ask(questions.value[currentQuestionNumber.value][QUESTION])
-        makeAnswers()
+
+        isLoading.value = true
+        currentQuestion.value = await Question.get()
+        isLoading.value = false
     }
 
     function winGame() {
