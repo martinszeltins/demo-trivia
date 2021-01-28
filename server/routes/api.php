@@ -6,5 +6,5 @@ use App\Http\Controllers\NewGameController;
 use App\Http\Controllers\QuestionController;
 
 Route::get('question',     [QuestionController::class, 'show']);
-Route::get('answer',       [AnswerController::class, 'show']);
+Route::post('answer',      [AnswerController::class, 'show']);
 Route::post('new-game',    [NewGameController::class, 'store']);

@@ -90,6 +90,8 @@
             answer: answer,
         })
 
+        console.log(result)
+
         isLoading.value = false
 
         if (result.is_correct) {
