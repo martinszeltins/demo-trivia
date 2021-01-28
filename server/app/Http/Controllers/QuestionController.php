@@ -31,9 +31,9 @@ class QuestionController extends Controller
         Question::find($question->id)->markAsked();
 
         return [
-            'id' => $question->id,
-            'question' => $question->question,
-            'answers' => $answers,
+            'id'        => $question->id,
+            'question'  => $question->question,
+            'answers'   => $answers,
         ];
     }
 
@@ -44,14 +44,24 @@ class QuestionController extends Controller
      */
     public function getAnswers($correctAnswer)
     {
-        $correctAnswerPosition = rand(0, 3);
-
-        for ($i = 0; $i < 4; $i++) {
-            $answers[] = strval(rand(1, 250));
-        }
-
-        $answers[$correctAnswerPosition] = $correctAnswer;
+        $correct = rand(0, 3);
+        $answers = $this->getRandomNumbers(4);
+        $answers[$correct] = $correctAnswer;
 
         return $answers;
+    }
+
+    /**
+     * Generate an array of random numbers
+     *
+     * @return  array
+     */
+    public function getRandomNumbers($count)
+    {
+        for ($i = 0; $i < $count; $i++) {
+            $numbers[] = strval(rand(1, 250));
+        }
+
+        return $numbers;
     }
 }
