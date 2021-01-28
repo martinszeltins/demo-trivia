@@ -8,7 +8,7 @@ class Answer
 
         try {
             const response = await fetch(`http://localhost:50846/answer`, {
-                method: 'POST',
+                method: 'GET',
                 headers: jsonHeaders,
                 body: JSON.stringify(data),
             })

@@ -21,7 +21,7 @@ class QuestionController extends Controller
     /**
      * Return a random question with answers
      *
-     * @return  object
+     * @return  array
      */
     public function getQuestionWithAnswers()
     {
