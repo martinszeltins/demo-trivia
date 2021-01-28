@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Question;
 
-class QuestionAndAnswersController extends Controller
+class QuestionController extends Controller
 {
     /**
      * Return a random question with possible answers
