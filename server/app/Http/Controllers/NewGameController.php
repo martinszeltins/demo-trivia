@@ -20,6 +20,7 @@ class NewGameController extends Controller
             $questions[] = [
                 'question' => $this->ask($question),
                 'answer' => $answer,
+                'user_id' => auth()->id(),
             ];
         }
 
@@ -45,7 +46,7 @@ class NewGameController extends Controller
      */
     public function insertQuestionsInDB($questions)
     {
-        Question::truncate();
+        Question::whereUserId(auth()->id())->delete();
         Question::insert($questions);
     }
 }

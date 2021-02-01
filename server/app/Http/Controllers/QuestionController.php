@@ -25,10 +25,10 @@ class QuestionController extends Controller
      */
     public function getQuestionWithAnswers()
     {
-        $question = Question::randomUnasked()->first();
+        $question = Question::whereUserId(auth()->id())->randomUnasked()->first();
         $answers = $this->getAnswers($question->answer);
         
-        Question::find($question->id)->markAsked();
+        $question->markAsked();
 
         return [
             'id'        => $question->id,
